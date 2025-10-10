@@ -11,7 +11,7 @@ public class Main {
     public static final String CYAN = "\u001B[36m";
 
     public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
+        Scanner in = new Scanner(System.in);
 
         while (true) {
             System.out.print("\033[H\033[2J");  // clear screen
@@ -28,12 +28,29 @@ public class Main {
             // added newline (\n) before asking input
             System.out.print(CYAN + "╚═══► Enter option here:\n" + RESET);
 
-            int choice = sc.nextInt(); // user enters input
-
-            if (choice == 0) {
-                System.out.println(RED + "Exiting ATM Simulation... Goodbye!" + RESET);
-                break;
+            String s = in.nextLine().trim();
+            if (!s.matches("\\d+")) {
+                System.out.println( RED + "Enter a valid number!" + RESET);
+                continue;
             }
+            int choice = Integer.parseInt(s);
+            switch (choice) {
+                case 1:
+                    UserService.login(in);
+                    break;
+                case 2:
+                    AdminService.login(in);
+                    break;
+                case 0:
+                    System.out.println(BLUE + "Bye!" + RESET);
+                    in.close();
+                    return;   // exit program
+                default:
+                    System.out.println(RED + "Invalid choice." + RESET);
+            }
+
+
+
         }
     }
 }
