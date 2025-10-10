@@ -43,7 +43,7 @@ public class Main {
                 case 0:
                     System.out.println(BLUE + "Bye!" + RESET);
                     in.close();
-                    return;   // exit program
+                    return;
                 default:
                     System.out.println(RED + "Invalid choice." + RESET);
             }
