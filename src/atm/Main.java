@@ -14,7 +14,7 @@ public class Main {
         Scanner in = new Scanner(System.in);
 
         while (true) {
-            System.out.print("\033[H\033[2J");  // clear screen
+            System.out.print("\033[H\033[2J");
             System.out.flush();
 
             System.out.println(BLUE + "╔══════════════════════════════╗" + RESET);
@@ -25,7 +25,6 @@ public class Main {
             System.out.println(YELLOW + "║  [2] Admin Login             ║" + RESET);
             System.out.println(RED + "║  [0] Exit                    ║" + RESET);
 
-            // added newline (\n) before asking input
             System.out.print(CYAN + "╚═══► Enter option here:\n" + RESET);
 
             String s = in.nextLine().trim();
