@@ -2,32 +2,47 @@ package atm;
 
 
 
-import java.util.Scanner;
+import java.util.Map;
 
 public class AdminService {
-    private static final int ADMIN_PIN = 1234;
+    private final Datastore store;
 
-    public static void login (Scanner in) {
-        System.out.println("Enter admin pin: ");
-        int pin = in.nextInt();
-        if (pin != ADMIN_PIN) {
-            System.out.println("Invalid admin pin");
-            return;
-        }
-        dashboard(in);
+    private final String ADMIN_USER = "admin";
+    private final String ADMIN_PASS = "admin123";
+
+    public AdminService(Datastore store) {
+        this.store = store;
     }
 
-    private static void dashboard (Scanner in) {
-        while (true) {
-            System.out.println("\n-- Admin Dashboard --");
-            System.out.println("1) List accounts");
-            System.out.println("2) Create account");
-            System.out.println("3) Delete account");
-            System.out.println("4) Change PIN");
-            System.out.println("0) Exit");
-            System.out.print("Choose: ");
-        }
+    public boolean adminLogin(String username, String password) {
+        return ADMIN_USER.equals(username) && ADMIN_PASS.equals(password);
     }
 
+    public Map<Integer, Account> listAllAccounts() {
+        return store.getAllAccountsSnapshot();
+    }
 
+    public Account findAccount(int accountNumber) {
+        return store.getAccount(accountNumber);
+    }
+
+    public boolean adminDeposit(int accountNumber, double amount) {
+        return store.deposit(accountNumber, amount);
+    }
+
+    public boolean adminWithdraw(int accountNumber, double amount) {
+        return store.withdraw(accountNumber, amount);
+    }
+
+    public boolean resetPin(int accountNumber, int newPin) {
+        return store.setPin(accountNumber, newPin);
+    }
+
+    public boolean renameAccount(int accountNumber, String newName) {
+        return store.setName(accountNumber, newName);
+    }
+
+    public boolean deleteAccount(int accountNumber) {
+        return store.deleteAccount(accountNumber);
+    }
 }
