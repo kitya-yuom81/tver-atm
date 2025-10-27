@@ -1,31 +1,65 @@
 package atm;
 
-import java.util.Scanner;
+import java.util.HashMap;
+import java.util.Map;
 
 public class UserService {
-    public static void login(Scanner in) {   // method + do-while
-        int attempts = 0;
-        boolean ok = false;
-        int idx = -1;
+    private final Datastore store;
 
-        do {
-            System.out.print("Account No: ");
-            int acc = readInt(in);
-            System.out.print("PIN: ");
-            int pin = readInt(in);
-
-            idx = DataStore.findByAccNo(acc);
-            ok = (idx != -1 && DataStore.accounts[idx].pin == pin);
-            if (!ok) {
-                System.out.println("Invalid acc/pin.");
-                attempts++;
-            }
-        } while (!ok && attempts < 3);
-
-        if (ok) dashboard(in, idx);
+    public UserService(Datastore store) {
+        this.store = store;
     }
-    public static void dashboard(Scanner in, int idx) {}
-    public static int readInt(Scanner in) {}
 
+    // ===== Auth =====
+    public boolean authenticate(int accountNumber, int pin) {
+        Account a = store.getAccount(accountNumber);
+        return a != null && a.getPin() == pin;
+    }
 
+    // ===== Sign up =====
+    public int signUp(String name, int pin) {
+        return store.createAccount(name, pin);
+    }
+
+    // ===== Info =====
+    public Map<String, Object> getInfo(int accountNumber, int pin) {
+        Map<String, Object> out = new HashMap<>();
+        if (!authenticate(accountNumber, pin)) return out;
+        Account a = store.getAccount(accountNumber);
+        out.put("accountName", a.getName());
+        out.put("accountNumber", a.getAccountNumber());
+        out.put("balance", a.getBalance());
+        return out;
+    }
+
+    public double getBalance(int accountNumber, int pin) {
+        if (!authenticate(accountNumber, pin)) return -1;
+        return store.getAccount(accountNumber).getBalance();
+    }
+
+    // ===== Money Ops =====
+    public boolean deposit(int accountNumber, int pin, double amount) {
+        if (!authenticate(accountNumber, pin)) return false;
+        return store.deposit(accountNumber, amount);
+    }
+
+    public boolean withdraw(int accountNumber, int pin, double amount) {
+        if (!authenticate(accountNumber, pin)) return false;
+        return store.withdraw(accountNumber, amount);
+    }
+
+    public boolean deleteOwnAccount(int accountNumber, int pin) {
+        if (!authenticate(accountNumber, pin)) return false;
+        return store.deleteAccount(accountNumber);
+    }
+
+    public boolean changePin(int accountNumber, int pin, int newPin) {
+        if (!authenticate(accountNumber, pin)) return false;
+        return store.setPin(accountNumber, newPin);
+    }
+
+    public boolean changeName(int accountNumber, int pin, String newName) {
+        if (!authenticate(accountNumber, pin)) return false;
+        return store.setName(accountNumber, newName);
+    }
 }
