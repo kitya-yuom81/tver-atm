@@ -10,12 +10,10 @@ public class Datastore {
     private int nextAccNo = 1001;
 
     public Datastore() {
-        // Seed one demo account (optional)
         int demo = createAccount("Demo User", 1234);
         deposit(demo, 1000.00);
     }
 
-    // ===== Core CRUD =====
 
     public synchronized int createAccount(String name, int pin) {
         if (name == null || name.isBlank()) return -1;
@@ -35,11 +33,9 @@ public class Datastore {
     }
 
     public synchronized Map<Integer, Account> getAllAccountsSnapshot() {
-        // Shallow snapshot for admin listing
         return Collections.unmodifiableMap(new HashMap<>(accounts));
     }
 
-    // ===== Balance Operations (no PIN checks here) =====
 
     public synchronized boolean deposit(int accountNumber, double amount) {
         if (amount <= 0) return false;
